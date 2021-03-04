@@ -1,0 +1,49 @@
+{
+    "app_route": "http://localhost:8000/",
+    "frontend_url": "http://localhost:3000/",
+    "google_analytics": "",
+    "BACKEND_PORT": "8000",
+    "PORT": "3000",    
+    "CHOKIDAR_USEPOLLING":"true",
+    "JWT_KEY": "my_secret_key",
+    "JWT_HASH" : "HS256",
+    "MAIL_HOST": "smtp.gmail.com",
+    "MAIL_PORT" : "587",
+    "MAIL_USERNAME" : "testpandit34@gmail.com",
+    "MAIL_PASSWORD" : "Admin!@#123",
+    "SENDER_EMAIL" : "contact343@yopmail.com",
+    "db": {
+        "database": "flux_test",
+        "username": "root",
+        "password": "root",
+        "options": {
+            "timezone": "+05:30",
+            "dialect": "mysql",
+            "dialectOptions": {
+                "decimalNumbers": true
+            },
+            "port": 3306,
+            "pool": {
+                "max": 50,
+                "min": 0,
+                "idle": 500
+            },
+            "replication": {
+                "write": {
+                    "username": "root",
+                    "password": "root",
+                    "host": "localhost",
+                    "port": 3306
+                },
+                "read": [
+                    {
+                        "username": "root",
+                        "password": "root",
+                        "host": "localhost",
+                        "port": 3306
+                    }
+                ]
+            }
+        }
+    }
+}
