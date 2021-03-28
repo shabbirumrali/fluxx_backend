@@ -18,15 +18,7 @@ module.exports = (app, wagner) => {
     }));
     app.post('/v1/register', [
         check('email').notEmpty().withMessage('Email is required').bail().isEmail().withMessage('Email is not valid'),
-
-       // check('first_name').notEmpty().withMessage('first name is required').bail().isAlpha().withMessage('Only alphabets are allowed').bail().isLength({ min: 3, max:20 }).withMessage('First Name should be 3-20 characters long'),
-
-        //check('last_name').notEmpty().withMessage('last name is required').bail().isAlpha().withMessage('Only alphabets are allowed').bail().isLength({ min: 3, max:20 }).withMessage('last name should be 3-20 characters long'),
-
         check('password').notEmpty().withMessage('password is required').bail().isLength({ min: 6 }).withMessage('Minimum 6 characters are required'),
-
-        //check('phone').notEmpty().withMessage('phone number is required').bail().isNumeric().withMessage('phone number must be numeric').isLength({ min: 6, max:12 }).withMessage('phone number is not valid')
-
     ], (req, res, next)=>{
         
         let errors = validationResult(req); 
@@ -140,6 +132,80 @@ module.exports = (app, wagner) => {
             });
         }
         wagner.get('AuthManager').contactus(req.body).then(user=>{
+            if(user){
+                res.status(200).json(user)
+            }
+            else{
+                res.status(400).json(user)
+            }
+        }).catch(error=>{
+            next(error);
+        });
+    });
+    /*Reset Password*/
+    app.post('/v1/createCategory',[
+        check('categoryname').notEmpty().withMessage('Category Name is required').bail().isLength({ min: 6 }).withMessage('Minimum 6 characters are required'),
+    ], (req, res, next)=>{
+        let errors = validationResult(req);
+        if(!errors.isEmpty()){
+            res.status(422).json({
+                message: "Validations errors",
+                errors: errors.array()
+            });
+        }
+        wagner.get('AuthManager').createCategory(req).then(user=>{
+            if(user){
+                res.status(200).json(user)
+            }
+            else{
+                res.status(400).json(user)
+            }
+        }).catch(error=>{
+            next(error);
+        });
+    });
+    app.post('/v1/createCharter',(req, res, next)=>{
+        
+        wagner.get('AuthManager').createCharter(req).then(user=>{
+            if(user){
+                res.status(200).json(user)
+            }
+            else{
+                res.status(400).json(user)
+            }
+        }).catch(error=>{
+            next(error);
+        });
+    });
+    app.get('/v1/charterlist',(req, res, next)=>{
+        
+        wagner.get('AuthManager').charterlist(req).then(user=>{
+            if(user){
+                res.status(200).json(user)
+            }
+            else{
+                res.status(400).json(user)
+            }
+        }).catch(error=>{
+            next(error);
+        });
+    });
+    app.post('/v1/renameCharter',(req, res, next)=>{
+        
+        wagner.get('AuthManager').renameCharter(req).then(user=>{
+            if(user){
+                res.status(200).json(user)
+            }
+            else{
+                res.status(400).json(user)
+            }
+        }).catch(error=>{
+            next(error);
+        });
+    });
+     app.delete('/v1/deleteCharter',(req, res, next)=>{
+        
+        wagner.get('AuthManager').deleteCharter(req).then(user=>{
             if(user){
                 res.status(200).json(user)
             }

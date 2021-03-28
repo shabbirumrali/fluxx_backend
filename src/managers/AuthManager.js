@@ -14,6 +14,8 @@ class AuthManager {
     constructor(wagner) {
         this.User = wagner.get("User");
         this.mail = wagner.get("MailHelper");
+        this.Category = wagner.get("Category");
+        this.project  = wagner.get("Project");
     }
     async checkToken( params ){
 
@@ -335,6 +337,236 @@ class AuthManager {
             })
         }
     }
+     async createCategory(params) {
+        try {
+            console.log(params.body);
+            console.log('sdsd');
+            const JWT_KEY = config.get('JWT_KEY');
+            const JWT_HASH = config.get('JWT_HASH');           
+            const auth_token = params.headers.authorization.split(' ')[1];
+
+            const decodedValue = jwt.verify(auth_token, JWT_KEY);
+            const user_id = decodedValue.user.id;
+            if(!decodedValue){                  
+                return({
+                    success : false,
+                    status : 422,
+                    message: "Token Not valid"
+                })
+                
+            }
+              let Category = await this.Category.create({
+                categoryname: params.body.categoryname                   
+              });
+              if(Category){
+                return({
+                    success : true,
+                    status : 200,
+                    message: "Category Created successfully."
+                })
+                }else{
+                    return({
+                        success : false,
+                        status : 400,
+                        message: "error"
+                    })
+                }
+        } catch (e) {
+            console.log(e);
+            return({
+                success : false,
+                status : 400,
+                messsage: "Internal server error.",
+                "error": e
+            })
+        }
+    }
+    async createCharter(params) {
+        try {
+            console.log(params.body);
+            
+            const JWT_KEY = config.get('JWT_KEY');
+            const JWT_HASH = config.get('JWT_HASH');           
+            const auth_token = params.headers.authorization.split(' ')[1];
+            const decodedValue = jwt.verify(auth_token, JWT_KEY);
+            const user_id = decodedValue.user.id;
+            if(!decodedValue){                  
+                return({
+                    success : false,
+                    status : 422,
+                    message: "Token Not valid"
+                })
+                
+            }
+            let checkCharter =  await this.project.findOne({where: {name: params.body.name}});
+            if(checkCharter){
+                console.log(checkCharter);
+                let charter = await this.project.update({
+                    name: params.body.name,
+                    project_manager: params.body.project_manager ? params.body.project_manager: "",
+                    project_sponsor: params.body.project_sponsor ? params.body.project_sponsor : "",
+                    project_need: params.body.project_need ? params.body.project_need: "",
+                    goal: params.body.goal ? params.body.goal:"",
+                    benefits: params.body.benefits ? params.body.benefits :"",
+                    InScope: params.body.InScope ? params.body.InScope :"",
+                    outScope: params.body.outScope ? params.body.outScope :"",
+                    startDate: params.body.startDate ? params.body.startDate :"",
+                    finishDate: params.body.finishDate ? params.body.finishDate :"",
+                    budget: params.body.budget ? params.body.budget:"",
+                    assumptionTime: params.body.assumptionTime ? params.body.assumptionTime:"",
+                    impact: params.body.impact ? params.body.impact :"",
+                    stakeholder: params.body.stakeholder ? params.body.stakeholder :"",
+                    risks: params.body.risks ? params.body.risks :""
+                 },{ where: { id: checkCharter.id } });
+                if(charter){
+                    return({
+                        success : true,
+                        status : 200,
+                        message: "Charter update successfully."
+                    })
+                }else{
+                    return({
+                        success : false,
+                        status : 400,
+                        message: "error"
+                    })
+                }
+
+            }else{
+
+              let charter = await this.project.create({
+                    name: params.body.name,
+                    project_manager: params.body.project_manager ? params.body.project_manager: "",
+                    project_sponsor: params.body.project_sponsor ? params.body.project_sponsor : "",
+                    project_need: params.body.project_need ? params.body.project_need: "",
+                    goal: params.body.goal ? params.body.goal:"",
+                    benefits: params.body.benefits ? params.body.benefits :"",
+                    InScope: params.body.InScope ? params.body.InScope :"",
+                    outScope: params.body.outScope ? params.body.outScope :"",
+                    startDate: params.body.startDate ? params.body.startDate :"",
+                    finishDate: params.body.finishDate ? params.body.finishDate :"",
+                    budget: params.body.budget ? params.body.budget:"",
+                    assumptionTime: params.body.assumptionTime ? params.body.assumptionTime:"",
+                    impact: params.body.impact ? params.body.impact :"",
+                    stakeholder: params.body.stakeholder ? params.body.stakeholder :"",
+                    risks: params.body.risks ? params.body.risks :""
+              });
+              if(charter){
+                    return({
+                        success : true,
+                        status : 200,
+                        message: "Charter Created successfully."
+                    })
+                }else{
+                    return({
+                        success : false,
+                        status : 400,
+                        message: "error"
+                    })
+                }
+            }
+        } catch (e) {
+            console.log(e);
+            return({
+                success : false,
+                status : 400,
+                messsage: "Internal server error.",
+                "error": e
+            })
+        }
+    }
+     async charterlist(params) {
+        try {
+          
+            const JWT_KEY = config.get('JWT_KEY');
+            const JWT_HASH = config.get('JWT_HASH');           
+            const auth_token = params.headers.authorization.split(' ')[1];
+            const decodedValue = jwt.verify(auth_token, JWT_KEY);
+            const user_id = decodedValue.user.id;
+            if(!decodedValue){                  
+                return({
+                    success : false,
+                    status : 422,
+                    message: "Token Not valid"
+                })
+                
+            }else{
+
+                let charterlist =  await this.project.findAll({order: [
+                        ['id', 'DESC'],
+                        ['name', 'ASC'],
+                    ]});
+                return({
+                        success : true,
+                        status : 200,
+                        charterlist:charterlist,
+                        message: "Charter Created successfully."
+                    })
+
+
+            }
+            
+        } catch (e) {
+            console.log(e);
+            return({
+                success : false,
+                status: 422,
+                error: e
+            })
+        }
+    }
+    async renameCharter(params) {
+        try {
+            const JWT_KEY = config.get('JWT_KEY');
+            const JWT_HASH = config.get('JWT_HASH');           
+            const auth_token = params.headers.authorization.split(' ')[1];
+            const decodedValue = jwt.verify(auth_token, JWT_KEY);
+            const user_id = decodedValue.user.id;
+            if(!decodedValue){                  
+                return({
+                    success : false,
+                    status : 422,
+                    message: "Token Not valid"
+                })
+            }
+            let checkCharter =  await this.project.findOne({where: {id: params.body.charterid}});
+
+            
+            if(checkCharter){
+                
+                let charter = await this.project.update({
+                    name: params.body.newchartername,                    
+                 },{ where: { id: params.body.charterid } });
+                if(charter){
+                    return({
+                        success : true,
+                        status : 200,
+                        message: "Charter update successfully."
+                    })
+                }else{
+                    return({
+                        success : false,
+                        status : 400,
+                        message: "error"
+                    })
+                }
+
+            }else{
+                 return({
+                        success : false,
+                        status : 400,
+                        message: "error"
+                    })
+            }
+        }catch (e){
+            console.log(e);
+            return({
+                success : false,
+                status: 422,
+                error: e
+            })
+        }
+    }       
 }
 
 module.exports = AuthManager;
