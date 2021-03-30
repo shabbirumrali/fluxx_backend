@@ -77,7 +77,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         unique: false,        
     },
-             
+     step:{
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: false,        
+    },             
     created_at: {
         type          : DataTypes.DATE,
         allowNull     : true,

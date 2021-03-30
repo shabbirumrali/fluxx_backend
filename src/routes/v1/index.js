@@ -203,9 +203,23 @@ module.exports = (app, wagner) => {
             next(error);
         });
     });
-     app.delete('/v1/deleteCharter',(req, res, next)=>{
+    app.post('/v1/deleteCharter',(req, res, next)=>{
         
         wagner.get('AuthManager').deleteCharter(req).then(user=>{
+            if(user){
+                res.status(200).json(user)
+            }
+            else{
+                res.status(400).json(user)
+            }
+        }).catch(error=>{
+            next(error);
+        });
+    });
+     app.get('/v1/fetchcharter/:chartername',(req, res, next)=>{
+       
+       
+        wagner.get('AuthManager').fetchcharter(req).then(user=>{
             if(user){
                 res.status(200).json(user)
             }

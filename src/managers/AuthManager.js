@@ -382,8 +382,9 @@ class AuthManager {
         }
     }
     async createCharter(params) {
+       
         try {
-            console.log(params.body);
+            
             
             const JWT_KEY = config.get('JWT_KEY');
             const JWT_HASH = config.get('JWT_HASH');           
@@ -400,7 +401,9 @@ class AuthManager {
             }
             let checkCharter =  await this.project.findOne({where: {name: params.body.name}});
             if(checkCharter){
-                console.log(checkCharter);
+
+                console.log(params.body.step+"------->");
+            
                 let charter = await this.project.update({
                     name: params.body.name,
                     project_manager: params.body.project_manager ? params.body.project_manager: "",
@@ -416,7 +419,8 @@ class AuthManager {
                     assumptionTime: params.body.assumptionTime ? params.body.assumptionTime:"",
                     impact: params.body.impact ? params.body.impact :"",
                     stakeholder: params.body.stakeholder ? params.body.stakeholder :"",
-                    risks: params.body.risks ? params.body.risks :""
+                    risks: params.body.risks ? params.body.risks :"",
+                    step:params.body.step ? params.body.step:""
                  },{ where: { id: checkCharter.id } });
                 if(charter){
                     return({
@@ -449,7 +453,8 @@ class AuthManager {
                     assumptionTime: params.body.assumptionTime ? params.body.assumptionTime:"",
                     impact: params.body.impact ? params.body.impact :"",
                     stakeholder: params.body.stakeholder ? params.body.stakeholder :"",
-                    risks: params.body.risks ? params.body.risks :""
+                    risks: params.body.risks ? params.body.risks :"",
+                    step:params.body.step ? params.body.step:""
               });
               if(charter){
                     return({
@@ -566,7 +571,81 @@ class AuthManager {
                 error: e
             })
         }
-    }       
+    }  
+    async deleteCharter(params) {
+        console.log(params.headers);
+        try {
+            const JWT_KEY = config.get('JWT_KEY');
+            const JWT_HASH = config.get('JWT_HASH');           
+            const auth_token = params.headers.authorization.split(' ')[1];
+            const decodedValue = jwt.verify(auth_token, JWT_KEY);
+            const user_id = decodedValue.user.id;
+            if(!decodedValue){                  
+                return({
+                    success : false,
+                    status : 422,
+                    message: "Token Not valid"
+                })
+            }
+            let checkCharter =  await this.project.destroy({where: {id: params.body.charterid}});
+            if(checkCharter){
+                    return({
+                        success : true,
+                        status : 200,
+                        message: "Charter delete successfully."
+                    })
+
+            }else{
+                 return({
+                        success : false,
+                        status : 400,
+                        message: "error"
+                    })
+            }
+        }catch (e){
+            console.log(e);
+            return({
+                success : false,
+                status: 422,
+                error: e
+            })
+        }
+    } 
+    async fetchcharter(params) {
+        try {
+          
+            const JWT_KEY = config.get('JWT_KEY');
+            const JWT_HASH = config.get('JWT_HASH');           
+            const auth_token = params.headers.authorization.split(' ')[1];
+            const decodedValue = jwt.verify(auth_token, JWT_KEY);
+            const user_id = decodedValue.user.id;
+            if(!decodedValue){                  
+                return({
+                    success : false,
+                    status : 422,
+                    message: "Token Not valid"
+                })                
+            }else{  
+                let charterlist =  await this.project.findOne({where: {name: params.params.chartername}});
+                return({
+                        success : true,
+                        status : 200,
+                        charterlist:charterlist,
+                        message: "Charter Data"
+                    })
+            }
+            
+        } catch (e) {
+            console.log(e);
+            return({
+                success : false,
+                status: 422,
+                error: e
+            })
+        }
+    } 
+
+
 }
 
 module.exports = AuthManager;
