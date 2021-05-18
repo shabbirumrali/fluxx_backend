@@ -15,6 +15,7 @@ class AuthManager {
         this.User = wagner.get("User");
         this.mail = wagner.get("MailHelper");
         this.Category = wagner.get("Category");
+       // this.CategoryProduct = wagner.get("CategoryProduct");
         this.project  = wagner.get("Project");
     }
     async checkToken( params ){
@@ -413,8 +414,8 @@ class AuthManager {
                     benefits: params.body.benefits ? params.body.benefits :"",
                     InScope: params.body.InScope ? params.body.InScope :"",
                     outScope: params.body.outScope ? params.body.outScope :"",
-                    startDate: params.body.startDate ? params.body.startDate :"",
-                    finishDate: params.body.finishDate ? params.body.finishDate :"",
+                    startDate: params.body.startDate ? params.body.startDate :null,
+                    finishDate: params.body.finishDate ? params.body.finishDate :null,
                     budget: params.body.budget ? params.body.budget:"",
                     assumptionTime: params.body.assumptionTime ? params.body.assumptionTime:"",
                     impact: params.body.impact ? params.body.impact :"",
@@ -447,8 +448,8 @@ class AuthManager {
                     benefits: params.body.benefits ? params.body.benefits :"",
                     InScope: params.body.InScope ? params.body.InScope :"",
                     outScope: params.body.outScope ? params.body.outScope :"",
-                    startDate: params.body.startDate ? params.body.startDate :"",
-                    finishDate: params.body.finishDate ? params.body.finishDate :"",
+                    startDate: params.body.startDate ? params.body.startDate :null,
+                    finishDate: params.body.finishDate ? params.body.finishDate :null,
                     budget: params.body.budget ? params.body.budget:"",
                     assumptionTime: params.body.assumptionTime ? params.body.assumptionTime:"",
                     impact: params.body.impact ? params.body.impact :"",
@@ -644,6 +645,81 @@ class AuthManager {
             })
         }
     } 
+
+    async fetchcategory(params) {
+        try {
+          
+            const JWT_KEY = config.get('JWT_KEY');
+            const JWT_HASH = config.get('JWT_HASH');           
+            const auth_token = params.headers.authorization.split(' ')[1];
+            const decodedValue = jwt.verify(auth_token, JWT_KEY);
+            const user_id = decodedValue.user.id;
+            if(!decodedValue){                  
+                return({
+                    success : false,
+                    status : 422,
+                    message: "Token Not valid"
+                })                
+            }else{  
+                let categoryList =  await this.Category.findAll({order: [
+                        ['id', 'DESC']
+                    ]});
+                return({
+                        success : true,
+                        status : 200,
+                        categoryList:categoryList,
+                        message: "Category List"
+                    })
+            }
+            
+        } catch (e) {
+            console.log(e);
+            return({
+                success : false,
+                status: 422,
+                error: e
+            })
+        }
+    } 
+
+    // async updateCharterCategory(params) {
+    //     try {
+          
+    //         const JWT_KEY = config.get('JWT_KEY');
+    //         const JWT_HASH = config.get('JWT_HASH');           
+    //         const auth_token = params.headers.authorization.split(' ')[1];
+    //         const decodedValue = jwt.verify(auth_token, JWT_KEY);
+    //         const user_id = decodedValue.user.id;
+    //         if(!decodedValue){                  
+    //             return({
+    //                 success : false,
+    //                 status : 422,
+    //                 message: "Token Not valid"
+    //             })                
+    //         }else{ 
+            
+    //             let categoryList =  await this.CategoryProduct.create({
+    //                                 order: [
+    //                                     ['id', 'DESC']
+    //                                 ]
+    //                             });
+    //             return({
+    //                     success : true,
+    //                     status : 200,
+    //                     categoryList:categoryList,
+    //                     message: "Category List"
+    //                 })
+    //         }
+            
+    //     } catch (e) {
+    //         console.log(e);
+    //         return({
+    //             success : false,
+    //             status: 422,
+    //             error: e
+    //         })
+    //     }
+    // } 
 
 
 }

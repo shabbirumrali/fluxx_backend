@@ -230,6 +230,20 @@ module.exports = (app, wagner) => {
             next(error);
         });
     });
+     app.get('/v1/fetchcategory',(req, res, next)=>{
+       
+       
+        wagner.get('AuthManager').fetchcategory(req).then(user=>{
+            if(user){
+                res.status(200).json(user)
+            }
+            else{
+                res.status(400).json(user)
+            }
+        }).catch(error=>{
+            next(error);
+        });
+    });
 
 
 

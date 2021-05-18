@@ -44,12 +44,12 @@ module.exports = (sequelize, DataTypes) => {
     },
      startDate:{
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         unique: false,        
     },
      finishDate:{
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         unique: false,        
     },
      budget:{
