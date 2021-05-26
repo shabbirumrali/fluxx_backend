@@ -244,6 +244,42 @@ module.exports = (app, wagner) => {
             next(error);
         });
     });
+    app.post('/v1/lockAccount',(req, res, next)=>{       
+       
+        wagner.get('AuthManager').lockAccount(req).then(user=>{
+            if(user){
+                res.status(200).json(user)
+            }
+            else{
+                res.status(400).json(user)
+            }
+        }).catch(error=>{
+            next(error);
+        });
+    });
+    app.post('/v1/logout',(req, res, next)=>{
+        wagner.get('AuthManager').logout(req).then(user=>{
+            if(user){
+                res.status(200).json(user)
+            }
+            else{
+                res.status(400).json(user)
+            }
+        }).catch(error=>{
+            next(error);
+        });
+    });
+    app.post('/v1/changeEmail',(req,res,next)=>{
+        wagner.get('AuthManager').changeEmail(req).then(user=>{
+            if(user){
+                res.status(200).json(user)
+            }else{
+                res.status(400).json(user)
+            }
+        }).catch(error=>{
+            next(error);
+        });
+    });
 
 
 

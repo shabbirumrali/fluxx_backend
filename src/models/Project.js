@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         unique: false,        
     },
      goal:{
-        type: DataTypes.STRING,
+        type: DataTypes.JSON,
         allowNull: false,
         unique: false,        
     },

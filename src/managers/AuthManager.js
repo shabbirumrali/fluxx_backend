@@ -154,7 +154,7 @@ class AuthManager {
                 return({
                     success : false,
                     status : 422,
-                    message: "Account is disabled"
+                    message: "Account is not Existed"
                 })
             }
 
@@ -407,21 +407,21 @@ class AuthManager {
             
                 let charter = await this.project.update({
                     name: params.body.name,
-                    project_manager: params.body.project_manager ? params.body.project_manager: "",
-                    project_sponsor: params.body.project_sponsor ? params.body.project_sponsor : "",
-                    project_need: params.body.project_need ? params.body.project_need: "",
-                    goal: params.body.goal ? params.body.goal:"",
-                    benefits: params.body.benefits ? params.body.benefits :"",
-                    InScope: params.body.InScope ? params.body.InScope :"",
-                    outScope: params.body.outScope ? params.body.outScope :"",
-                    startDate: params.body.startDate ? params.body.startDate :null,
-                    finishDate: params.body.finishDate ? params.body.finishDate :null,
-                    budget: params.body.budget ? params.body.budget:"",
-                    assumptionTime: params.body.assumptionTime ? params.body.assumptionTime:"",
-                    impact: params.body.impact ? params.body.impact :"",
-                    stakeholder: params.body.stakeholder ? params.body.stakeholder :"",
-                    risks: params.body.risks ? params.body.risks :"",
-                    step:params.body.step ? params.body.step:""
+                    project_manager: params.body.project_manager ? params.body.project_manager: checkCharter.project_manager,
+                    project_sponsor: params.body.project_sponsor ? params.body.project_sponsor : checkCharter.project_sponsor,
+                    project_need: params.body.project_need ? params.body.project_need: checkCharter.project_need,
+                    goal: params.body.goal ? params.body.goal:checkCharter.goal,
+                    benefits: params.body.benefits ? params.body.benefits :checkCharter.benefits,
+                    InScope: params.body.InScope ? params.body.InScope :checkCharter.InScope,
+                    outScope: params.body.outScope ? params.body.outScope :checkCharter.outScope,
+                    startDate: params.body.startDate ? params.body.startDate :checkCharter.startDate,
+                    finishDate: params.body.finishDate ? params.body.finishDate :checkCharter.finishDate,
+                    budget: params.body.budget ? params.body.budget:checkCharter.budget,
+                    assumptionTime: params.body.assumptionTime ? params.body.assumptionTime:checkCharter.assumptionTime,
+                    impact: params.body.impact ? params.body.impact :checkCharter.impact,
+                    stakeholder: params.body.stakeholder ? params.body.stakeholder :checkCharter.stakeholder,
+                    risks: params.body.risks ? params.body.risks :checkCharter.risks,
+                    step:params.body.step ? params.body.step:checkCharter.step
                  },{ where: { id: checkCharter.id } });
                 if(charter){
                     return({
@@ -720,6 +720,106 @@ class AuthManager {
     //         })
     //     }
     // } 
+    async lockAccount(params) {
+        try {
+            const JWT_KEY = config.get('JWT_KEY');
+            const JWT_HASH = config.get('JWT_HASH');           
+            const auth_token = params.headers.authorization.split(' ')[1];
+            const decodedValue = jwt.verify(auth_token, JWT_KEY);
+            const user_id = decodedValue.user.id;
+            console.log(params.body);
+            console.log(user_id)
+            if(!decodedValue){                  
+                return({
+                    success : false,
+                    status : 422,
+                    message: "Token Not valid"
+                })
+            }
+            let checkUser =  await this.User.findOne({where: {id: user_id}});
+            let hash      =  await bcrypt.compare(params.body.password, checkUser.password);            
+            if(hash){                
+                let charter = await this.User.update({
+                    status: 0,                    
+                 },{ where: { id: user_id } });
+                if(charter){
+                    return({
+                        success : true,
+                        status : 200,
+                        message: "User Deactive successfully."
+                    })
+                }else{
+                    return({
+                        success : false,
+                        status : 400,
+                        message: "error"
+                    })
+                }
+
+            }else{
+                 return({
+                        success : false,
+                        status : 400,
+                        message: "error"
+                    })
+            }
+        }catch (e){
+            console.log(e);
+            return({
+                success : false,
+                status: 422,
+                error: e
+            })
+        }
+    }  
+    async changeEmail(params) {
+        try {
+            const JWT_KEY = config.get('JWT_KEY');
+            const JWT_HASH = config.get('JWT_HASH');           
+            const auth_token = params.headers.authorization.split(' ')[1];
+            const decodedValue = jwt.verify(auth_token, JWT_KEY);
+            const user_id = decodedValue.user.id;
+            if(!decodedValue){                  
+                return({
+                    success : false,
+                    status : 422,
+                    message: "Token Not valid"
+                })
+            }
+            let checkUser =  await this.User.findOne({where: {id: user_id}});
+            if(checkUser){
+                let charter = await this.User.update({
+                    email: params.body.email,                    
+                 },{ where: { id: user_id } });
+                if(charter){
+                    return({
+                        success : true,
+                        status : 200,
+                        message: "Email Update successfully."
+                    })
+                }else{
+                    return({
+                        success : false,
+                        status : 400,
+                        message: "error"
+                    })
+                }  
+            }else{
+                 return({
+                        success : false,
+                        status : 400,
+                        message: "error"
+                    })
+            }
+        }catch (e){
+            console.log(e);
+            return({
+                success : false,
+                status: 422,
+                error: e
+            })
+        }
+    }
 
 
 }

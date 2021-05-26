@@ -22,15 +22,7 @@ class UserManager {
 
     constructor(wagner) {
         this.User = wagner.get("User");        
-    }
-
-
-    
-
-    
-
-    
-    
+    }    
     async changePassword(params){
         try{
             const JWT_KEY = config.get('JWT_KEY');
