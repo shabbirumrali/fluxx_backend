@@ -2,6 +2,11 @@
 var moment = require('moment');
 module.exports = (sequelize, DataTypes) => {
   const Project = sequelize.define('Project', {  
+    userId:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        unique: false,        
+    },
     name:{
         type: DataTypes.STRING,
         allowNull: false,

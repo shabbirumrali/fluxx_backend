@@ -6,6 +6,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,        
+    },
+    userId:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        unique: false,        
     },           
     createdAt: {
         type          : DataTypes.DATE,
@@ -17,6 +22,13 @@ module.exports = (sequelize, DataTypes) => {
       paranoid        : false,
       timestamps      : false,      
   });
+  Category.associate = function(models) {
+    // associations can be defined here        
+        Category.hasMany(models.CategoryProject, {
+          foreignKey: 'categoryId',
+        });
+  };
+
 
   return Category;
 };

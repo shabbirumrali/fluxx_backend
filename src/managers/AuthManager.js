@@ -15,7 +15,7 @@ class AuthManager {
         this.User = wagner.get("User");
         this.mail = wagner.get("MailHelper");
         this.Category = wagner.get("Category");
-       // this.CategoryProduct = wagner.get("CategoryProduct");
+        this.CategoryProject = wagner.get("CategoryProject");
         this.project  = wagner.get("Project");
     }
     async checkToken( params ){
@@ -357,7 +357,8 @@ class AuthManager {
                 
             }
               let Category = await this.Category.create({
-                categoryname: params.body.categoryname                   
+                categoryname: params.body.categoryname,
+                userId:user_id                   
               });
               if(Category){
                 return({
@@ -392,6 +393,7 @@ class AuthManager {
             const auth_token = params.headers.authorization.split(' ')[1];
             const decodedValue = jwt.verify(auth_token, JWT_KEY);
             const user_id = decodedValue.user.id;
+            console.log('+++++++++++'+user_id);
             if(!decodedValue){                  
                 return({
                     success : false,
@@ -407,6 +409,7 @@ class AuthManager {
             
                 let charter = await this.project.update({
                     name: params.body.name,
+                    userId:user_id,
                     project_manager: params.body.project_manager ? params.body.project_manager: checkCharter.project_manager,
                     project_sponsor: params.body.project_sponsor ? params.body.project_sponsor : checkCharter.project_sponsor,
                     project_need: params.body.project_need ? params.body.project_need: checkCharter.project_need,
@@ -441,6 +444,7 @@ class AuthManager {
 
               let charter = await this.project.create({
                     name: params.body.name,
+                    userId:user_id,
                     project_manager: params.body.project_manager ? params.body.project_manager: "",
                     project_sponsor: params.body.project_sponsor ? params.body.project_sponsor : "",
                     project_need: params.body.project_need ? params.body.project_need: "",
@@ -498,10 +502,14 @@ class AuthManager {
                 
             }else{
 
-                let charterlist =  await this.project.findAll({order: [
-                        ['id', 'DESC'],
-                        ['name', 'ASC'],
-                    ]});
+                let charterlist =  await this.project.findAll({where: {
+                                userId : user_id 
+                            },
+                            order: [
+                               ['id', 'DESC'],
+                               ['name', 'ASC'],
+                             ]
+                });
                 return({
                         success : true,
                         status : 200,
@@ -682,44 +690,45 @@ class AuthManager {
         }
     } 
 
-    // async updateCharterCategory(params) {
-    //     try {
+    async updateCharterCategory(params) {
+        try {
+           
           
-    //         const JWT_KEY = config.get('JWT_KEY');
-    //         const JWT_HASH = config.get('JWT_HASH');           
-    //         const auth_token = params.headers.authorization.split(' ')[1];
-    //         const decodedValue = jwt.verify(auth_token, JWT_KEY);
-    //         const user_id = decodedValue.user.id;
-    //         if(!decodedValue){                  
-    //             return({
-    //                 success : false,
-    //                 status : 422,
-    //                 message: "Token Not valid"
-    //             })                
-    //         }else{ 
+            const JWT_KEY = config.get('JWT_KEY');
+            const JWT_HASH = config.get('JWT_HASH');           
+            const auth_token = params.headers.authorization.split(' ')[1];
+            const decodedValue = jwt.verify(auth_token, JWT_KEY);
+            const user_id = decodedValue.user.id;
+            if(!decodedValue){                  
+                return({
+                    success : false,
+                    status : 422,
+                    message: "Token Not valid"
+                })                
+            }else{ 
             
-    //             let categoryList =  await this.CategoryProduct.create({
-    //                                 order: [
-    //                                     ['id', 'DESC']
-    //                                 ]
-    //                             });
-    //             return({
-    //                     success : true,
-    //                     status : 200,
-    //                     categoryList:categoryList,
-    //                     message: "Category List"
-    //                 })
-    //         }
+                let categoryList =  await this.CategoryProject.create({
+                                                categoryId: params.body.categoryId,
+                                                projectId:params.body.projectId,
+                                                projectname:params.body.projectname,
+                                                userId:user_id                   
+                                              });
+                return({
+                        success : true,
+                        status  : 200,
+                        message : "Charter moved successfully"
+                      })
+            }
             
-    //     } catch (e) {
-    //         console.log(e);
-    //         return({
-    //             success : false,
-    //             status: 422,
-    //             error: e
-    //         })
-    //     }
-    // } 
+        } catch (e) {
+            console.log(e);
+            return({
+                success : false,
+                status: 422,
+                error: e
+            })
+        }
+    } 
     async lockAccount(params) {
         try {
             const JWT_KEY = config.get('JWT_KEY');
@@ -812,6 +821,45 @@ class AuthManager {
                     })
             }
         }catch (e){
+            console.log(e);
+            return({
+                success : false,
+                status: 422,
+                error: e
+            })
+        }
+    }
+    async fetchcategoryprojects(params){
+        try {   
+        console.log(params);       
+            const JWT_KEY = config.get('JWT_KEY');
+            const JWT_HASH = config.get('JWT_HASH');           
+            const auth_token = params.headers.authorization.split(' ')[1];
+            const decodedValue = jwt.verify(auth_token, JWT_KEY);
+            const user_id = decodedValue.user.id;
+            if(!decodedValue){                  
+                return({
+                    success : false,
+                    status : 422,
+                    message: "Token Not valid"
+                })                
+            }else{  
+                let categoryList = await this.Category.findAll({ where: { id: params.params.categoryId },
+                        include: [
+                            {
+                                model: this.CategoryProject, 
+                            }
+                        ]
+                    });
+                return({
+                        success : true,
+                        status : 200,
+                        categoryList:categoryList,
+                        message: "Category List"
+                    })
+            }
+            
+        } catch (e) {
             console.log(e);
             return({
                 success : false,

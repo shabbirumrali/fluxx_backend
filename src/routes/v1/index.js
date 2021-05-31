@@ -280,6 +280,30 @@ module.exports = (app, wagner) => {
             next(error);
         });
     });
+    app.post('/v1/updateCharterCategory',(req,res,next)=>{
+        wagner.get('AuthManager').updateCharterCategory(req).then(user=>{
+            if(user){
+                res.status(200).json(user)
+            }else{
+                res.status(400).json(user)
+            }
+        }).catch(error=>{
+            next(error);
+        });
+    });
+    app.get('/v1/fetchcategoryprojects/:categoryId',(req, res, next)=>{       
+       
+        wagner.get('AuthManager').fetchcategoryprojects(req).then(user=>{
+            if(user){
+                res.status(200).json(user)
+            }
+            else{
+                res.status(400).json(user)
+            }
+        }).catch(error=>{
+            next(error);
+        });
+    });
 
 
 
