@@ -29,13 +29,15 @@ module.exports = (sequelize, DataTypes) => {
     },
      goal:{
         type: DataTypes.JSON,
-        allowNull: false,
-        unique: false,        
+        allowNull: true,
+        unique: false
+            
     },
      benefits:{
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: false,        
+        type: DataTypes.JSON,
+        allowNull: true,
+        unique: false, 
+        
     },
      InScope:{
         type: DataTypes.STRING,
@@ -68,19 +70,21 @@ module.exports = (sequelize, DataTypes) => {
         unique: false,        
     },
      impact:{
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: DataTypes.JSON,
+        allowNull: true,
         unique: false,        
     },
      stakeholder:{
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: false,        
+        type: DataTypes.JSON,
+        allowNull: true,
+        unique: false, 
+       
     },
      risks:{
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: false,        
+        type: DataTypes.JSON,
+        allowNull: true,
+        unique: false,
+             
     },
      step:{
         type: DataTypes.STRING,

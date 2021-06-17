@@ -403,11 +403,83 @@ class AuthManager {
                 
             }
             let checkCharter =  await this.project.findOne({where: {name: params.body.name}});
-            if(checkCharter){
 
-                console.log(params.body.step+"------->");
             
-                let charter = await this.project.update({
+            if(checkCharter){ 
+                 console.log(params.body.goal); 
+                console.log(typeof checkCharter.goal);
+                let containdata = checkCharter.goal.includes("goallist");
+
+                console.log(containdata+"hjkjhkhj");
+
+                if(params.body.goal != undefined){
+                    if(params.body.goal.length>0){
+                        if(params.body.goal[0].goal == undefined){
+                            console.log('sdfsdfds');
+                            params.body.goal = JSON.parse(checkCharter.goal);
+                        }
+
+                        
+                    }
+                }
+                if(typeof checkCharter.goal == 'string' && checkCharter.goal.includes("goallist") == false){
+                    checkCharter.goal = '';
+                }else{
+                    checkCharter.goal = JSON.parse(checkCharter.goal);
+                }
+                if(params.body.benefits != undefined){
+                    if(params.body.benefits.length>0){
+                        if(params.body.benefits[0].benefits == undefined){
+                            params.body.benefits = JSON.parse(checkCharter.benefits);
+                        }
+                    }
+                }
+                if(typeof checkCharter.benefits == 'string' && checkCharter.benefits.includes("goallist") == false){
+                    checkCharter.benefits = '';
+                }else{
+                    checkCharter.benefits = JSON.parse(checkCharter.benefits);
+                }
+                
+                if(params.body.impact != undefined){
+                    if(params.body.impact.length>0){
+                        if(params.body.impact[0].impact == undefined){
+                            params.body.impact = JSON.parse(checkCharter.impact);
+                        }
+                    }
+                }
+                if(typeof checkCharter.impact == 'string' && checkCharter.impact.includes("goallist") == false){
+                    checkCharter.impact = '';
+                }else{
+                    checkCharter.impact = JSON.parse(checkCharter.impact);
+                }
+                
+                if(params.body.stakeholder != undefined){
+                    if(params.body.stakeholder.length>0){
+                        if(params.body.stakeholder[0].stakeholder == undefined){
+                            params.body.stakeholder = JSON.parse(checkCharter.stakeholder);
+                        }
+                    }
+                } 
+                if(typeof checkCharter.stakeholder == 'string' && checkCharter.stakeholder.includes("goallist") == false){
+                    checkCharter.stakeholder = '';
+                }else{
+                    checkCharter.stakeholder = JSON.parse(checkCharter.stakeholder);
+                }
+               
+                if(params.body.risks != undefined){
+                    if(params.body.risks.length>0){
+                        if(params.body.risks[0].risks == undefined){
+                            params.body.risks = JSON.parse(checkCharter.risks);
+                        }
+                    }
+                }
+                if(typeof checkCharter.risks == 'string' && checkCharter.risks.includes("goallist") == false){
+                    checkCharter.risks = '';
+                }else{
+                    checkCharter.risks = JSON.parse(checkCharter.risks);
+                }
+
+                let updateObject = {
                     name: params.body.name,
                     userId:user_id,
                     project_manager: params.body.project_manager ? params.body.project_manager: checkCharter.project_manager,
@@ -425,7 +497,9 @@ class AuthManager {
                     stakeholder: params.body.stakeholder ? params.body.stakeholder :checkCharter.stakeholder,
                     risks: params.body.risks ? params.body.risks :checkCharter.risks,
                     step:params.body.step ? params.body.step:checkCharter.step
-                 },{ where: { id: checkCharter.id } });
+                 };
+                 console.log(updateObject);
+                let charter = await this.project.update(updateObject,{ where: { id: checkCharter.id } });
                 if(charter){
                     return({
                         success : true,
@@ -645,7 +719,7 @@ class AuthManager {
             }
             
         } catch (e) {
-            console.log(e);
+            //console.log(e);
             return({
                 success : false,
                 status: 422,
@@ -831,7 +905,7 @@ class AuthManager {
     }
     async fetchcategoryprojects(params){
         try {   
-        console.log(params);       
+       // console.log(params);       
             const JWT_KEY = config.get('JWT_KEY');
             const JWT_HASH = config.get('JWT_HASH');           
             const auth_token = params.headers.authorization.split(' ')[1];
