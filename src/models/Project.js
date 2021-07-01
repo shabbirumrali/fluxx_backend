@@ -90,7 +90,12 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
         unique: false,        
-    },             
+    }, 
+    step:{
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        unique: false,        
+    },            
     created_at: {
         type          : DataTypes.DATE,
         allowNull     : true,

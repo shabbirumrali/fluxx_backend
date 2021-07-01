@@ -743,9 +743,12 @@ class AuthManager {
                     message: "Token Not valid"
                 })                
             }else{  
-                let categoryList =  await this.Category.findAll({order: [
+                let categoryList =  await this.Category.findAll({
+                    where: { userId: user_id },
+                    order: [
                         ['id', 'DESC']
-                    ]});
+                    ]
+                });
                 return({
                         success : true,
                         status : 200,
@@ -918,7 +921,9 @@ class AuthManager {
                     message: "Token Not valid"
                 })                
             }else{  
-                let categoryList = await this.Category.findAll({ where: { id: params.params.categoryId },
+                let categoryList = await this.Category.findAll(
+                     { 
+                        where: { id: params.params.categoryId },
                         include: [
                             {
                                 model: this.CategoryProject, 
