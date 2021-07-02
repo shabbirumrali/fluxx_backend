@@ -304,6 +304,19 @@ module.exports = (app, wagner) => {
             next(error);
         });
     });
+    app.post('/v1/deleteFolder',(req, res, next)=>{
+        
+        wagner.get('AuthManager').deleteFolder(req).then(user=>{
+            if(user){
+                res.status(200).json(user)
+            }
+            else{
+                res.status(400).json(user)
+            }
+        }).catch(error=>{
+            next(error);
+        });
+    });
 
 
 
