@@ -91,7 +91,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         unique: false,        
     }, 
-    step:{
+    assignCat:{
         type: DataTypes.BOOLEAN,
         allowNull: false,
         unique: false,        
@@ -101,6 +101,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull     : true,
         defaultValue  : sequelize.literal('CURRENT_TIMESTAMP')
     },
+    
   }, {
       tableName       : 'projects',
       paranoid        : false,

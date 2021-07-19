@@ -317,6 +317,19 @@ module.exports = (app, wagner) => {
             next(error);
         });
     });
+    /*Reset Password*/
+    app.post('/v1/updatepassword',(req, res, next)=>{        
+        wagner.get('AuthManager').updatepassword(req).then(user=>{
+            if(user){
+                res.status(200).json(user)
+            }
+            else{
+                res.status(400).json(user)
+            }
+        }).catch(error=>{
+            next(error);
+        });
+    });
 
 
 

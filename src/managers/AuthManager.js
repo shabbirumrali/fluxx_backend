@@ -173,7 +173,7 @@ class AuthManager {
                     return({
                         success: true,
                         status: 200,
-                        "message": "Login successfully",
+                        "message": "Login successful",
                         user: {
                             id: user.id,
                             role: user.role,
@@ -496,6 +496,7 @@ class AuthManager {
                     impact: params.body.impact ? params.body.impact :checkCharter.impact,
                     stakeholder: params.body.stakeholder ? params.body.stakeholder :checkCharter.stakeholder,
                     risks: params.body.risks ? params.body.risks :checkCharter.risks,
+                    assignCat:params.body.assignCat ? params.body.assignCat: 0,
                     step:params.body.step ? params.body.step:checkCharter.step
                  };
                  console.log(updateObject);
@@ -533,6 +534,7 @@ class AuthManager {
                     impact: params.body.impact ? params.body.impact :"",
                     stakeholder: params.body.stakeholder ? params.body.stakeholder :"",
                     risks: params.body.risks ? params.body.risks :"",
+                    assignCat:params.body.assignCat ? params.body.assignCat: 0,
                     step:params.body.step ? params.body.step:""
               });
               if(charter){
@@ -575,9 +577,10 @@ class AuthManager {
                 })
                 
             }else{
-
+                
                 let charterlist =  await this.project.findAll({where: {
-                                userId : user_id 
+                                userId : user_id,
+                                 
                             },
                             order: [
                                ['id', 'DESC'],
@@ -782,19 +785,45 @@ class AuthManager {
                     status : 422,
                     message: "Token Not valid"
                 })                
-            }else{ 
-            
-                let categoryList =  await this.CategoryProject.create({
-                                                categoryId: params.body.categoryId,
-                                                projectId:params.body.projectId,
-                                                projectname:params.body.projectname,
-                                                userId:user_id                   
-                                              });
-                return({
-                        success : true,
-                        status  : 200,
-                        message : "Charter moved successfully"
-                      })
+            }else{
+                if(params.body.categoryId == "uncategorized"){
+
+                    let updateCharter = await this.project.update({
+                                                                    assignCat: 0,                    
+                                                                 },{ where: { id: params.body.projectId } });
+                    if(updateCharter){
+                        let categoryList =  await this.CategoryProject.destroy({where:{categoryId:params.body.currentCategory,
+                                                                              projectId:params.body.projectId,
+                                                                              userId:user_id 
+                                                                          }
+                                                                      });
+                        return({
+                                success : true,
+                                status  : 200,
+                                message : "Charter moved successfully"
+                              })
+                    } 
+                }else{
+                    let updateCharter = await this.project.update({
+                                                                    assignCat: 1,                    
+                                                                 },{ where: { id: params.body.projectId } });
+                    if(updateCharter){
+                
+                    let categoryList =  await this.CategoryProject.create({
+                                                    categoryId: params.body.categoryId,
+                                                    projectId:params.body.projectId,
+                                                    projectname:params.body.projectname,
+                                                    userId:user_id                   
+                                                  });
+                    
+                    
+                    return({
+                            success : true,
+                            status  : 200,
+                            message : "Charter moved successfully"
+                          })
+                    }
+                }
             }
             
         } catch (e) {
@@ -984,6 +1013,60 @@ class AuthManager {
             })
         }
     } 
+
+    async updatepassword(params) {
+
+        try {
+            console.log(params);
+
+            const JWT_KEY = config.get('JWT_KEY');
+            const JWT_HASH = config.get('JWT_HASH');           
+            const auth_token = params.headers.authorization.split(' ')[1];
+            const decodedValue = jwt.verify(auth_token, JWT_KEY);
+            const user_id = decodedValue.user.id;
+            if(!decodedValue){                  
+                return({
+                    success : false,
+                    status : 422,
+                    message: "Token Not valid"
+                })
+            }
+            let checkUser =  await this.User.findOne({where: {id: user_id}});
+            if(checkUser){
+                let hashPassword = await bcrypt.hash(params.body.newpassword, saltRounds);
+                let updatepassw = await this.User.update({
+                    password: hashPassword,                    
+                 },{ where: { id: user_id } });
+                if(updatepassw){
+                    return({
+                        success : true,
+                        status : 200,
+                        message: "Password Update successfully."
+                    })
+                }else{
+                    return({
+                        success : false,
+                        status : 400,
+                        message: "error"
+                    })
+                } 
+            }else{
+                 return({
+                        success : false,
+                        status : 400,
+                        message: "error"
+                    })
+            }
+        } catch (e) {
+            console.log(e);
+            return({
+                success : false,
+                status: 422,
+                error: e
+            })
+        }
+    }
+
 
 
 }
