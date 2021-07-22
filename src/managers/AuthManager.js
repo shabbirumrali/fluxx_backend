@@ -787,7 +787,7 @@ class AuthManager {
                 })                
             }else{
                 if(params.body.categoryId == "uncategorized"){
-
+                    let checkCharter =  await this.CategoryProject.destroy({where:{id:params.body.movefromcat}});
                     let updateCharter = await this.project.update({
                                                                     assignCat: 0,                    
                                                                  },{ where: { id: params.body.projectId } });
@@ -804,6 +804,7 @@ class AuthManager {
                               })
                     } 
                 }else{
+                    let checkCharter =  await this.CategoryProject.destroy({where:{id:params.body.movefromcat}});
                     let updateCharter = await this.project.update({
                                                                     assignCat: 1,                    
                                                                  },{ where: { id: params.body.projectId } });
