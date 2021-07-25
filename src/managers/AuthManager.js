@@ -178,7 +178,8 @@ class AuthManager {
                             id: user.id,
                             role: user.role,
                             token: token,
-                            email:user.email
+                            email:user.email,
+                            subscribe:user.subscribeUser
                             }
                     })
 

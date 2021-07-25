@@ -26,6 +26,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue:1
     },
+    subscribeUser:{
+      type: DataTypes.BOOLEAN,
+      defaultValue:1
+    },
     reset_token:{
       type: DataTypes.STRING,
       allowNull: true
