@@ -203,6 +203,20 @@ module.exports = (app, wagner) => {
             next(error);
         });
     });
+     app.post('/v1/renameFolder',(req, res, next)=>{
+        
+        wagner.get('AuthManager').renameFolder(req).then(user=>{
+            if(user){
+                res.status(200).json(user)
+            }
+            else{
+                res.status(400).json(user)
+            }
+        }).catch(error=>{
+            next(error);
+        });
+    });
+
     app.post('/v1/deleteCharter',(req, res, next)=>{
         
         wagner.get('AuthManager').deleteCharter(req).then(user=>{

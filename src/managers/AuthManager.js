@@ -1015,6 +1015,46 @@ class AuthManager {
             })
         }
     } 
+    async renameFolder(params){
+          try {
+            const JWT_KEY = config.get('JWT_KEY');
+            const JWT_HASH = config.get('JWT_HASH');           
+            const auth_token = params.headers.authorization.split(' ')[1];
+            const decodedValue = jwt.verify(auth_token, JWT_KEY);
+            const user_id = decodedValue.user.id;
+            if(!decodedValue){                  
+                return({
+                    success : false,
+                    status : 422,
+                    message: "Token Not valid"
+                })
+            }
+            let checkCharter =  await this.Category.update({categoryname: params.body.newfoldername},
+                                                           {where:{id:params.body.folderid}});
+            if(checkCharter){
+                    return({
+                        success : true,
+                        status : 200,
+                        message: "Folder rename successfully."
+                    })
+            }else{
+                 return({
+                        success : false,
+                        status : 400,
+                        message: "error"
+                    })
+            }
+        }catch (e){
+            console.log(e);
+            return({
+                success : false,
+                status: 422,
+                error: e
+            })
+        }
+
+
+    }
 
     async updatepassword(params) {
 
