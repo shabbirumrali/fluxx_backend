@@ -40,14 +40,14 @@ module.exports = (sequelize, DataTypes) => {
         
     },
      InScope:{
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: false,        
+        type: DataTypes.JSON,
+        allowNull: true,
+        unique: false,     
     },
      outScope:{
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: false,        
+        type: DataTypes.JSON,
+        allowNull: true,
+        unique: false,       
     },
      startDate:{
         type: DataTypes.STRING,
@@ -65,9 +65,9 @@ module.exports = (sequelize, DataTypes) => {
         unique: false,        
     },
      assumptionTime:{
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: false,        
+        type: DataTypes.JSON,
+        allowNull: true,
+        unique: false,      
     },
      impact:{
         type: DataTypes.JSON,

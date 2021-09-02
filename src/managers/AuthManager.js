@@ -435,6 +435,33 @@ class AuthManager {
                         }
                     }
                 }
+                if(typeof checkCharter.InScope == 'string' && checkCharter.InScope.includes("goallist") == false){
+                    checkCharter.InScope = '';
+                }else{
+                    checkCharter.InScope = JSON.parse(checkCharter.InScope);
+                }
+                if(params.body.InScope != undefined){
+                    if(params.body.InScope.length>0){
+                        if(params.body.InScope[0].InScope == undefined){
+                            params.body.InScope = JSON.parse(checkCharter.InScope);
+                        }
+                    }
+                }
+
+                if(typeof checkCharter.outScope == 'string' && checkCharter.outScope.includes("goallist") == false){
+                    checkCharter.outScope = '';
+                }else{
+                    checkCharter.outScope = JSON.parse(checkCharter.outScope);
+                }
+                if(params.body.outScope != undefined){
+                    if(params.body.outScope.length>0){
+                        if(params.body.outScope[0].outScope == undefined){
+                            params.body.outScope = JSON.parse(checkCharter.outScope);
+                        }
+                    }
+                }
+                console.log(checkCharter);
+
                 if(typeof checkCharter.benefits == 'string' && checkCharter.benefits.includes("goallist") == false){
                     checkCharter.benefits = '';
                 }else{
@@ -478,6 +505,18 @@ class AuthManager {
                     checkCharter.risks = '';
                 }else{
                     checkCharter.risks = JSON.parse(checkCharter.risks);
+                }
+                if(params.body.assumptionTime != undefined){
+                    if(params.body.assumptionTime.length>0){
+                        if(params.body.assumptionTime[0].assumptionTime == undefined){
+                            params.body.assumptionTime = JSON.parse(checkCharter.assumptionTime);
+                        }
+                    }
+                }
+                if(typeof checkCharter.assumptionTime == 'string' && checkCharter.assumptionTime.includes("goallist") == false){
+                    checkCharter.assumptionTime = '';
+                }else{
+                    checkCharter.assumptionTime = JSON.parse(checkCharter.assumptionTime);
                 }
 
                 let updateObject = {
@@ -773,6 +812,7 @@ class AuthManager {
 
     async updateCharterCategory(params) {
         try {
+            console.log(params.body);
            
           
             const JWT_KEY = config.get('JWT_KEY');
@@ -788,6 +828,7 @@ class AuthManager {
                 })                
             }else{
                 if(params.body.categoryId == "uncategorized"){
+                    console.log('sdfsdfsdfsdfsdf');
                     let checkCharter =  await this.CategoryProject.destroy({where:{id:params.body.movefromcat}});
                     let updateCharter = await this.project.update({
                                                                     assignCat: 0,                    
@@ -805,6 +846,7 @@ class AuthManager {
                               })
                     } 
                 }else{
+                    console.log('++++++++++++sdfsdfsdfsdfsdf');
                     let checkCharter =  await this.CategoryProject.destroy({where:{id:params.body.movefromcat}});
                     let updateCharter = await this.project.update({
                                                                     assignCat: 1,                    
