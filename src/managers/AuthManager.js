@@ -847,6 +847,7 @@ class AuthManager {
                     } 
                 }else{
                     console.log('++++++++++++sdfsdfsdfsdfsdf');
+                    console.log(params.body)
                     let checkCharter =  await this.CategoryProject.destroy({where:{id:params.body.movefromcat}});
                     let updateCharter = await this.project.update({
                                                                     assignCat: 1,                    
