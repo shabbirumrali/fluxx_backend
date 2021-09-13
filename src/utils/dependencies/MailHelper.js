@@ -7,7 +7,10 @@ const transport = nodemailer.createTransport({
     auth: {
         user: config.get('MAIL_USERNAME'),
         pass: config.get('MAIL_PASSWORD')
-    }
+    },
+    tls: {
+    rejectUnauthorized: false
+   }
     
 });
 
