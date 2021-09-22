@@ -714,6 +714,7 @@ class AuthManager {
                 })
             }
             let checkCharter =  await this.project.destroy({where: {id: params.body.charterid}});
+            let checkCharter2 =  await this.CategoryProject.destroy({where:{projectId:params.body.charterid}});
             if(checkCharter){
                     return({
                         success : true,
@@ -849,6 +850,7 @@ class AuthManager {
                     console.log('++++++++++++sdfsdfsdfsdfsdf');
                     console.log(params.body)
                     let checkCharter =  await this.CategoryProject.destroy({where:{id:params.body.movefromcat}});
+                    console.log(params.body.projectId);
                     let updateCharter = await this.project.update({
                                                                     assignCat: 1,                    
                                                                  },{ where: { id: params.body.projectId } });
