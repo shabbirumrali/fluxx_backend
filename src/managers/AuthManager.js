@@ -89,7 +89,7 @@ class AuthManager {
                 let emailParams = ({
                     from    : config.get('SENDER_EMAIL'),
                     to      : user.email,
-                    subject : "New Account Created",
+                    subject : "Welcome to fluxx!",
                     html    : emailTemplate
                 });
 
