@@ -199,6 +199,51 @@ class AuthManager {
             })
         }
     }
+    async fetchuserlist(params) {
+        try {
+          
+            const JWT_KEY = config.get('JWT_KEY');
+            const JWT_HASH = config.get('JWT_HASH');           
+            const auth_token = params.headers.authorization.split(' ')[1];
+            const decodedValue = jwt.verify(auth_token, JWT_KEY);
+            const user_id = decodedValue.user.id;
+            if(!decodedValue){                  
+                return({
+                    success : false,
+                    status : 422,
+                    message: "Token Not valid"
+                })
+                
+            }else{
+                
+                let userlist =  await this.User.findAll({attributes: {
+                            exclude: ['password']
+                            },where: {
+                                 role:'user'                                 
+                            },
+                            order: [
+                               ['id', 'DESC']                               
+                             ]
+                });
+                return({
+                        success : true,
+                        status : 200,
+                        userList:userlist,
+                        message: "User List"
+                    })
+
+
+            }
+            
+        } catch (e) {
+            console.log(e);
+            return({
+                success : false,
+                status: 422,
+                error: e
+            })
+        }
+    }
 
     async forgot_password(params) {
         try {
@@ -440,7 +485,7 @@ class AuthManager {
                 }else{
                     checkCharter.InScope = JSON.parse(checkCharter.InScope);
                 }
-                if(params.body.InScope != undefined){
+                if(params.body.InScope != undefined && checkCharter.InScope !='' ){
                     if(params.body.InScope.length>0){
                         if(params.body.InScope[0].InScope == undefined){
                             params.body.InScope = JSON.parse(checkCharter.InScope);
@@ -453,13 +498,15 @@ class AuthManager {
                 }else{
                     checkCharter.outScope = JSON.parse(checkCharter.outScope);
                 }
-                if(params.body.outScope != undefined){
+                
+                if(params.body.outScope != undefined && checkCharter.outScope !=''){
                     if(params.body.outScope.length>0){
                         if(params.body.outScope[0].outScope == undefined){
                             params.body.outScope = JSON.parse(checkCharter.outScope);
                         }
                     }
                 }
+                
                 console.log(checkCharter);
 
                 if(typeof checkCharter.benefits == 'string' && checkCharter.benefits.includes("goallist") == false){

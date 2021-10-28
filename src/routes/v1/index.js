@@ -190,6 +190,19 @@ module.exports = (app, wagner) => {
             next(error);
         });
     });
+    app.get('/v1/fetchuserlist',(req, res, next)=>{
+        
+        wagner.get('AuthManager').fetchuserlist(req).then(user=>{
+            if(user){
+                res.status(200).json(user)
+            }
+            else{
+                res.status(400).json(user)
+            }
+        }).catch(error=>{
+            next(error);
+        });
+    });
     app.post('/v1/renameCharter',(req, res, next)=>{
         
         wagner.get('AuthManager').renameCharter(req).then(user=>{
