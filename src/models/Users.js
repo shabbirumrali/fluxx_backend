@@ -33,7 +33,21 @@ module.exports = (sequelize, DataTypes) => {
     reset_token:{
       type: DataTypes.STRING,
       allowNull: true
-    },        
+    },  
+    reset_token:{
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    last_login:{
+        type          : DataTypes.DATE,
+        allowNull     : true,
+        defaultValue  : sequelize.literal('CURRENT_TIMESTAMP')
+    } ,   
+    account_delete_date:{
+      type          : DataTypes.DATE,
+      allowNull     : true,
+      defaultValue  : sequelize.literal('CURRENT_TIMESTAMP')
+  } ,   
     createdAt: {
         type          : DataTypes.DATE,
         allowNull     : true,

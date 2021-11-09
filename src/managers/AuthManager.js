@@ -9,7 +9,7 @@ const config = require('config');
 const ejs = require("ejs");
 const app_route = config.get('app_route');
 const frontend_url = config.get('frontend_url');
-
+const moment = require('moment');
 class AuthManager {
     constructor(wagner) {
         this.User = wagner.get("User");
@@ -161,6 +161,10 @@ class AuthManager {
             let hash = await bcrypt.compare(password, user.password);
 
             if (hash) {
+                let update_lastlogin = await this.User.update({
+                                            last_login : moment().format('YYYY-MM-DD HH:mm:ss')                                                                
+                                            },{ where: { id: user.id } });
+                
                 let token = await jwt.sign({ user: user }, JWT_KEY, { algorithm: JWT_HASH });
                     if (!token) {
                         console.log(err);
@@ -949,7 +953,8 @@ class AuthManager {
             let hash      =  await bcrypt.compare(params.body.password, checkUser.password);            
             if(hash){                
                 let charter = await this.User.update({
-                    status: 0,                    
+                    status: 0,
+                    account_delete_date:moment().format('YYYY-MM-DD HH:mm:ss')                    
                  },{ where: { id: user_id } });
                 if(charter){
                     return({
