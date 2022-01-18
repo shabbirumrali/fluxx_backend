@@ -453,14 +453,14 @@ class AuthManager {
                 
             }
             let checkCharter =  await this.project.findOne({where: {name: params.body.name}});
-
+             
+             
             
             if(checkCharter){ 
-                 console.log(params.body.goal); 
-                console.log(typeof checkCharter.goal);
+                 
                 let containdata = checkCharter.goal.includes("goallist");
 
-                console.log(containdata+"hjkjhkhj");
+        
 
                 if(params.body.goal != undefined){
                     if(params.body.goal.length>0){
@@ -511,7 +511,7 @@ class AuthManager {
                     }
                 }
                 
-                console.log(checkCharter);
+               
 
                 if(typeof checkCharter.benefits == 'string' && checkCharter.benefits.includes("goallist") == false){
                     checkCharter.benefits = '';
@@ -569,7 +569,7 @@ class AuthManager {
                 }else{
                     checkCharter.assumptionTime = JSON.parse(checkCharter.assumptionTime);
                 }
-
+               
                 let updateObject = {
                     name: params.body.name,
                     userId:user_id,
@@ -587,10 +587,10 @@ class AuthManager {
                     impact: params.body.impact ? params.body.impact :checkCharter.impact,
                     stakeholder: params.body.stakeholder ? params.body.stakeholder :checkCharter.stakeholder,
                     risks: params.body.risks ? params.body.risks :checkCharter.risks,
-                    assignCat:params.body.assignCat ? params.body.assignCat: 0,
+                    assignCat:params.body.assignCat ? params.body.assignCat: checkCharter.assignCat,
                     step:params.body.step ? params.body.step:checkCharter.step
                  };
-                 console.log(updateObject);
+               
                 let charter = await this.project.update(updateObject,{ where: { id: checkCharter.id } });
                 if(charter){
                     return({
@@ -607,7 +607,7 @@ class AuthManager {
                 }
 
             }else{
-
+               
               let charter = await this.project.create({
                     name: params.body.name,
                     userId:user_id,
