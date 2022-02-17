@@ -712,13 +712,16 @@ class AuthManager {
                 })
             }
             let checkCharter =  await this.project.findOne({where: {id: params.body.charterid}});
-
+            
             
             if(checkCharter){
                 
                 let charter = await this.project.update({
                     name: params.body.newchartername,                    
                  },{ where: { id: params.body.charterid } });
+                 let checkCharter2 =  await this.CategoryProject.update({
+                    projectname: params.body.newchartername,                    
+                 },{ where: { projectId: params.body.charterid } });
                 if(charter){
                     return({
                         success : true,
